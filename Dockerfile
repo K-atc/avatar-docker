@@ -14,29 +14,26 @@ RUN apt-get update && apt-get install -y --force-yes git make binutils-dev \
 	g++ build-essential python3 python3-pip \
 	libexpat1-dev sudo nano libc++-dev libc++1 \
 	libiberty-dev clang-3.6 libc6-dev-i386 subversion
+	git make libtool \
+	pkg-config autoconf automake texinfo \
+	libusb-1.0 usbutils telnet nano \
+	gdb-arm-none-eabi
+
 
 RUN git config --global user.name "Eurecom.S3"
 
 RUN mkdir /home/avatar
 RUN mkdir /home/avatar/projects
-RUN cd /home/avatar/projects
-
-RUN git clone --branch eurecom/avatar https://github.com/eurecom-s3/s2e.git
+RUN cd /home/avatar/projects; git clone --branch eurecom/avatar https://github.com/eurecom-s3/s2e.git
 
 #Fix Ubuntu 14 compatibility
-#git checkout -b my branch
-#git push origin branch_name
-
-RUN cd /home/avatar/projects/s2e/;\
-git remote add s2e2 https://github.com/dslab-epfl/s2e.git;\
-git fetch s2e2;\
-git stash;\
-git cherry-pick c3445ec76aad702c4c6db0d11755070f57251a2a;
+#RUN cd /home/avatar/projects/s2e/
+#git remote add s2e2 https://github.com/dslab-epfl/s2e.git;\
+#git fetch s2e2;\
+#git stash;\
+#git cherry-pick c3445ec76aad702c4c6db0d11755070f57251a2a;
 RUN export CPLUS_INCLUDE_PATH=/usr/include:/usr/include/x86_64-linux-gnu:/usr/include/x86_64-linux-gnu/c++/4.8
 RUN export C_INCLUDE_PATH=/usr/include:/usr/include/x86_64-linux-gnu
-
-#Clang.so not found
-RUN cp /usr/lib/x86_64-linux-gnu/libclang-3.6.so.1 /home/avatar/projects/s2e_build/llvm-native/Release/lib/libclang.so
 
 RUN mkdir /home/avatar/projects/s2e_build
 RUN cd /home/avatar/projects/s2e_build; make -f ../s2e/Makefile
@@ -49,6 +46,16 @@ RUN git clone --branch master https://github.com/eurecom-s3/avatar-python
 RUN pip3 install git+https://github.com/eurecom-s3/avatar-python.git#egg=avatar
 RUN git clone --branch master https://github.com/eurecom-s3/avatar-samples
 RUN git clone --branch eurecom/wip https://github.com/eurecom-s3/openocd
+
+RUN git clone git://git.code.sf.net/p/openocd/code /opt/openocd-code
+RUN cd /opt/openocd-code;./bootstrap;./configure --enable-jlink --enable-maintainer-$
+RUN cp /opt/openocd-code/contrib/*.rules /etc/udev/rules.d/
+
+#expose port 6665 : GDB
+EXPOSE 6666
+#expose port 4445 telnetl tcl
+EXPOSE 4444
+
 
 VOLUME dev/bus/usb:/dev/bus/usb
 
