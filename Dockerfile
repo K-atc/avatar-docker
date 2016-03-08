@@ -13,12 +13,9 @@ RUN apt-get update && apt-get install -y --force-yes git make binutils-dev \
 	texinfo gcc-arm-embedded expat libexpat1-dev python2.7-dev \
 	g++ build-essential python3 python3-pip \
 	libexpat1-dev sudo nano libc++-dev libc++1 \
-	libiberty-dev clang-3.6 libc6-dev-i386 subversion
-	git make libtool \
-	pkg-config autoconf automake texinfo \
-	libusb-1.0 usbutils telnet nano \
-	gdb-arm-none-eabi
-
+	libiberty-dev clang-3.6 libc6-dev-i386 subversion libtool \
+	pkg-config autoconf automake libusb-1.0 usbutils telnet nano
+#	gdb-arm-none-eabi
 
 RUN git config --global user.name "Eurecom.S3"
 
@@ -48,14 +45,13 @@ RUN git clone --branch master https://github.com/eurecom-s3/avatar-samples
 RUN git clone --branch eurecom/wip https://github.com/eurecom-s3/openocd
 
 RUN git clone git://git.code.sf.net/p/openocd/code /opt/openocd-code
-RUN cd /opt/openocd-code;./bootstrap;./configure --enable-jlink --enable-maintainer-$
+RUN cd /opt/openocd-code;./bootstrap;./configure --enable-jlink --enable-maintainer-mode; make -j6; make install
 RUN cp /opt/openocd-code/contrib/*.rules /etc/udev/rules.d/
 
 #expose port 6665 : GDB
-EXPOSE 6666
+EXPOSE 6665
 #expose port 4445 telnetl tcl
-EXPOSE 4444
-
+EXPOSE 4445
 
 VOLUME dev/bus/usb:/dev/bus/usb
 
