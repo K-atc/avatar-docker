@@ -44,7 +44,8 @@ RUN pip3 install git+https://github.com/eurecom-s3/avatar-python.git#egg=avatar
 RUN git clone --branch master https://github.com/eurecom-s3/avatar-samples
 RUN git clone --branch eurecom/wip https://github.com/eurecom-s3/openocd
 
-RUN git clone git://git.code.sf.net/p/openocd/code /opt/openocd-code
+#RUN git clone git://git.code.sf.net/p/openocd/code /opt/openocd-code
+RUN git clone https://github.com/eurecom-s3/openocd.git opt/openocd-code
 RUN cd /opt/openocd-code;./bootstrap;./configure --enable-jlink --enable-maintainer-mode; make -j6; make install
 RUN cp /opt/openocd-code/contrib/*.rules /etc/udev/rules.d/
 
