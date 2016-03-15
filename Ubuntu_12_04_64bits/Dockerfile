@@ -32,11 +32,12 @@ RUN cd /home/avatar/projects; git clone --branch eurecom/avatar https://github.c
 RUN export CPLUS_INCLUDE_PATH=/usr/include:/usr/include/x86_64-linux-gnu:/usr/include/x86_64-linux-gnu/c++/4.8
 RUN export C_INCLUDE_PATH=/usr/include:/usr/include/x86_64-linux-gnu
 
-RUN mkdir /home/avatar/projects/s2e_build
-RUN cd /home/avatar/projects/s2e_build; make -f ../s2e/Makefile
+RUN mkdir /home/avatar/projects/s2e-build
+RUN cd /home/avatar/projects/s2e-build; make -f ../s2e/Makefile
 
 RUN git clone --branch eurecom/wip https://github.com/eurecom-s3/gdb.git /home/avatar/projects/gdb
-RUN cd /home/avatar/projects/gdb; ./configure --with-python --with-expat=yes --target=arm-none-eabi; make -j4
+RUN mkdir /home/avatar/projects/gdb-build
+RUN cd /home/avatar/projects/gdb-build; ../configure --with-python --with-expat=yes --target=arm-none-eabi; make -j4; make all install
 
 WORKDIR /home/avatar/projects
 RUN git clone --branch master https://github.com/eurecom-s3/avatar-python
