@@ -1,8 +1,8 @@
-FROM ubuntu:14.04
+FROM ubuntu:12.04
 MAINTAINER Corteggiani Nassim nassim.corteggiani@maximintegrated.com
 
 #RUN apt-get update
-RUN apt-get install -y --force-yes software-properties-common git \
+RUN apt-get install -y --force-yes software-properties-common git python3-software-properties \
 && apt-get clean \
 && rm -rf /var/lib/apt/lists/*
 
@@ -11,9 +11,9 @@ RUN apt-get update && apt-get install -y --force-yes git make binutils-dev \
 	gettext flex bison pkg-config wget \
 	libglib2.0-dev nasm liblua5.1-0-dev libsigc++-2.0-dev \
 	texinfo gcc-arm-embedded expat libexpat1-dev python2.7-dev \
-	g++ build-essential python3 python3-pip \
+	g++ build-essential python3 \
 	libexpat1-dev sudo nano libc++-dev libc++1 \
-	libiberty-dev clang-3.6 libc6-dev-i386 subversion libtool \
+	libc6-dev-i386 subversion libtool \
 	pkg-config autoconf automake libusb-1.0 usbutils telnet nano
 #	gdb-arm-none-eabi
 
@@ -41,7 +41,7 @@ RUN cd /home/avatar/projects/gdb-build; ../configure --with-python --with-expat=
 
 WORKDIR /home/avatar/projects
 RUN git clone --branch master https://github.com/eurecom-s3/avatar-python
-RUN pip3 install git+https://github.com/eurecom-s3/avatar-python.git#egg=avatar
+#RUN pip3 install git+https://github.com/eurecom-s3/avatar-python.git#egg=avatar
 RUN git clone --branch master https://github.com/eurecom-s3/avatar-samples
 RUN git clone --branch eurecom/wip https://github.com/eurecom-s3/openocd
 
