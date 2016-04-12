@@ -1,8 +1,9 @@
 FROM ubuntu:12.04
+
 MAINTAINER Corteggiani Nassim nassim.corteggiani@maximintegrated.com
 
-#RUN apt-get update
-RUN apt-get install -y --force-yes software-properties-common git python3-software-properties \
+RUN apt-get update
+RUN apt-get install -y --force-yes software-properties-common git python-software-properties\
 && apt-get clean \
 && rm -rf /var/lib/apt/lists/*
 
@@ -21,23 +22,15 @@ RUN git config --global user.name "Eurecom.S3"
 
 RUN mkdir /home/avatar
 RUN mkdir /home/avatar/projects
-RUN cd /home/avatar/projects; git clone --branch eurecom/avatar https://github.com/eurecom-s3/s2e.git
-
-#Fix Ubuntu 14 compatibility
-#RUN cd /home/avatar/projects/s2e/
-#git remote add s2e2 https://github.com/dslab-epfl/s2e.git;\
-#git fetch s2e2;\
-#git stash;\
-#git cherry-pick c3445ec76aad702c4c6db0d11755070f57251a2a;
-RUN export CPLUS_INCLUDE_PATH=/usr/include:/usr/include/x86_64-linux-gnu:/usr/include/x86_64-linux-gnu/c++/4.8
-RUN export C_INCLUDE_PATH=/usr/include:/usr/include/x86_64-linux-gnu
+RUN cd /home/avatar/projects; git clone --branch eurecom/avatar https://github.com/eurecom-s3/s2e.git; 
+RUN cd /home/avatar/projects/s2e; git reset --hard e8f9e720144432eeef2c03e65683cac61f0d5d8c; git fetch
 
 RUN mkdir /home/avatar/projects/s2e-build
 RUN cd /home/avatar/projects/s2e-build; make -f ../s2e/Makefile
 
 RUN git clone --branch eurecom/wip https://github.com/eurecom-s3/gdb.git /home/avatar/projects/gdb
 RUN mkdir /home/avatar/projects/gdb-build
-RUN cd /home/avatar/projects/gdb-build; ../configure --with-python --with-expat=yes --target=arm-none-eabi; make -j4; make all install
+RUN cd /home/avatar/projects/gdb-build; ../gdb/configure --with-python --with-expat=yes --target=arm-none-eabi; make -j4; make all install
 
 WORKDIR /home/avatar/projects
 RUN git clone --branch master https://github.com/eurecom-s3/avatar-python
@@ -45,15 +38,9 @@ RUN git clone --branch master https://github.com/eurecom-s3/avatar-python
 RUN git clone --branch master https://github.com/eurecom-s3/avatar-samples
 RUN git clone --branch eurecom/wip https://github.com/eurecom-s3/openocd
 
-#RUN git clone git://git.code.sf.net/p/openocd/code /opt/openocd-code
-RUN git clone https://github.com/eurecom-s3/openocd.git opt/openocd-code
+RUN git clone https://github.com/eurecom-s3/openocd.git /opt/openocd-code
 RUN cd /opt/openocd-code;./bootstrap;./configure --enable-jlink --enable-maintainer-mode; make -j6; make install
-RUN cp /opt/openocd-code/contrib/*.rules /etc/udev/rules.d/
-
-#expose port 6665 : GDB
-EXPOSE 6665
-#expose port 4445 telnetl tcl
-EXPOSE 4445
+#RUN cp /opt/openocd-code/contrib/*.rules /etc/udev/rules.d/
 
 VOLUME dev/bus/usb:/dev/bus/usb
 
