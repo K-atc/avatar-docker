@@ -2,9 +2,12 @@ FROM ubuntu:14.04
 MAINTAINER Corteggiani Nassim nassim.corteggiani@maximintegrated.com
 
 #RUN apt-get update
-RUN apt-get install -y --force-yes software-properties-common git \
-&& apt-get clean \
-&& rm -rf /var/lib/apt/lists/*
+# RUN sudo rm /etc/apt/sources.list
+RUN sudo apt-get -y update
+RUN sudo apt-get install -y --force-yes software-properties-common git \
+&& echo dummy
+# && apt-get clean \
+# && rm -rf /var/lib/apt/lists/*
 
 RUN add-apt-repository -y ppa:team-gcc-arm-embedded/ppa
 RUN apt-get update && apt-get install -y --force-yes git make binutils-dev \
