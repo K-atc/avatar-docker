@@ -1,13 +1,10 @@
 FROM ubuntu:14.04
-MAINTAINER Corteggiani Nassim nassim.corteggiani@maximintegrated.com
 
-#RUN apt-get update
-# RUN sudo rm /etc/apt/sources.list
-RUN sudo apt-get -y update
-RUN sudo apt-get install -y --force-yes software-properties-common git \
-&& echo dummy
-# && apt-get clean \
-# && rm -rf /var/lib/apt/lists/*
+# Sttings for Japan
+RUN sed -i'~' -E "s@http://(..\.)?(archive|security)\.ubuntu\.com/ubuntu@http://ftp.jaist.ac.jp/pub/Linux/ubuntu@g" /etc/apt/sources.list
+
+RUN apt-get update
+RUN apt-get install -y --force-yes software-properties-common git vim less 
 
 RUN add-apt-repository -y ppa:team-gcc-arm-embedded/ppa
 RUN apt-get update && apt-get install -y --force-yes git make binutils-dev \
@@ -36,6 +33,8 @@ RUN export CPLUS_INCLUDE_PATH=/usr/include:/usr/include/x86_64-linux-gnu:/usr/in
 RUN export C_INCLUDE_PATH=/usr/include:/usr/include/x86_64-linux-gnu
 
 RUN mkdir /home/avatar/projects/s2e-build
+ADD ./undefined-symbol-error.patch /home/avatar/projects/s2e/patches
+RUN cd /home/avatar/projects/s2e/qemu/s2e && patch < ../../patches/undefined-symbol-error.patch
 RUN cd /home/avatar/projects/s2e-build; make -f ../s2e/Makefile
 
 RUN git clone --branch eurecom/wip https://github.com/eurecom-s3/gdb.git /home/avatar/projects/gdb
@@ -46,19 +45,23 @@ WORKDIR /home/avatar/projects
 RUN git clone --branch master https://github.com/eurecom-s3/avatar-python
 RUN pip3 install git+https://github.com/eurecom-s3/avatar-python.git#egg=avatar
 RUN git clone --branch master https://github.com/eurecom-s3/avatar-samples
-RUN git clone --branch eurecom/wip https://github.com/eurecom-s3/openocd
+# RUN git clone --branch eurecom/wip https://github.com/eurecom-s3/openocd
+RUN git clone https://github.com/ntfreak/openocd.git
 
 #RUN git clone git://git.code.sf.net/p/openocd/code /opt/openocd-code
 #RUN git clone https://github.com/eurecom-s3/openocd.git opt/openocd-code
-RUN cd /home/avatar/projects/openocd;./bootstrap;./configure --enable-jlink --enable-maintainer-mode; make -j6; make install
+RUN cd /home/avatar/projects/openocd;./bootstrap;./configure --enable-jlink --enable-maintainer-mode --enable-ftdi; make -j6; make install
 #RUN cp /opt/openocd-code/contrib/*.rules /etc/udev/rules.d/
+
+RUN apt-get install -y tmux vim silversearcher-ag 
+# RUN apt-get install -y curl && curl -kL https://bootstrap.pypa.io/get-pip.py | sudo python
 
 #expose port 6665 : GDB
 EXPOSE 6665
 #expose port 4445 telnetl tcl
 EXPOSE 4445
 
-VOLUME dev/bus/usb:/dev/bus/usb
+VOLUME /dev/bus/usb:/dev/bus/usb
 
 RUN useradd -ms /bin/bash avatar
 RUN echo "avatar:avatar" | chpasswd && adduser avatar sudo
@@ -66,6 +69,8 @@ RUN chown -R avatar:avatar /home/avatar
 
 USER avatar
 
-CMD ["echo","Home directory $HOME"]
-CMD ["echo","Workspace directory $HOME/projects"]
-CMD ["echo","Welcome to Avatar Framework !"]
+# CMD ["echo","Home directory $HOME"]
+# CMD ["echo","Workspace directory $HOME/projects"]
+# CMD ["echo","Welcome to Avatar Framework !"]
+
+CMD ["/bin/bash"]
