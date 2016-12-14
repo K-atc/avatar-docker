@@ -54,11 +54,17 @@ RUN cd /home/avatar/projects/openocd;./bootstrap;./configure --enable-jlink --en
 #RUN cp /opt/openocd-code/contrib/*.rules /etc/udev/rules.d/
 
 RUN apt-get install -y tmux vim silversearcher-ag 
-# RUN apt-get install -y curl && curl -kL https://bootstrap.pypa.io/get-pip.py | sudo python
+# RUN apt-get update
+# RUN apt-get install -y curl
+# RUN pip3 install pyelftools
 
-#expose port 6665 : GDB
+### personal deveopping settings
+RUN git remote set-url origin git@github.com:K-atc/avatar-python.git
+RUN echo "set term=xterm" >> /home/avatar/.vimrc
+
+### expose port 6665 : GDB
 EXPOSE 6665
-#expose port 4445 telnetl tcl
+### expose port 4445 telnetl tcl
 EXPOSE 4445
 
 VOLUME /dev/bus/usb:/dev/bus/usb
