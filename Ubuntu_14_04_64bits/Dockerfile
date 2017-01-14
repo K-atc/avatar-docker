@@ -53,14 +53,43 @@ RUN git clone https://github.com/ntfreak/openocd.git
 RUN cd /home/avatar/projects/openocd;./bootstrap;./configure --enable-jlink --enable-maintainer-mode --enable-ftdi; make -j6; make install
 #RUN cp /opt/openocd-code/contrib/*.rules /etc/udev/rules.d/
 
-RUN apt-get install -y tmux vim silversearcher-ag 
-# RUN apt-get update
-# RUN apt-get install -y curl
-# RUN pip3 install pyelftools
+RUN apt-get install -y vim silversearcher-ag 
 
-### personal deveopping settings
-RUN git remote set-url origin git@github.com:K-atc/avatar-python.git
-RUN echo "set term=xterm" >> /home/avatar/.vimrc
+### tmux
+RUN apt-get install -y python-software-properties software-properties-common && \
+    add-apt-repository -y ppa:pi-rho/dev && \
+    apt-get update && \
+    apt-get install -y tmux=2.0-1~ppa1~t
+
+### personal developing settings
+# RUN git remote set-url origin git@github.com:K-atc/avatar-python.git
+RUN mkdir -p /home/avatar/.vim/tmp && echo -e 'set term=xterm\n\
+""" swp directory\n\
+set directory=~/.vim/tmp' >> /home/avatar/.vimrc
+
+### for tmux 
+### (1) install tmux-plugins/tpm
+### (2) install tmux-plugins/tmux-resurrect
+RUN git clone https://github.com/tmux-plugins/tpm /home/avatar/.tmux/plugins/tpm && \
+    echo -e "\n\
+# List of plugins\n\
+set -g @plugin 'tmux-plugins/tpm'\n\
+set -g @plugin 'tmux-plugins/tmux-sensible'\n\
+\n\
+# Other examples:\n\
+# set -g @plugin 'github_username/plugin_name'\n\
+# set -g @plugin 'git@github.com/user/plugin'\n\
+# set -g @plugin 'git@bitbucket.com/user/plugin'\n\
+\n\
+# Initialize TMUX plugin manager (keep this line at the very bottom of tmux.conf)\n\
+run '~/.tmux/plugins/tpm/tpm'\n\
+\n\
+set -g @plugin 'tmux-plugins/tmux-resurrect'\n\
+" >> /home/avatar/.tmux.conf
+
+RUN apt install -y lua5.1 luarocks
+RUN git clone https://github.com/ldrumm/chronos && cd chronos && luarocks make rockspecs/chronos-0.2-1.rockspec && \
+    luarocks build luasocket
 
 ### expose port 6665 : GDB
 EXPOSE 6665
