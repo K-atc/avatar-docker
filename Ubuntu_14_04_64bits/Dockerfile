@@ -53,7 +53,7 @@ RUN git clone https://github.com/ntfreak/openocd.git
 RUN cd /home/avatar/projects/openocd;./bootstrap;./configure --enable-jlink --enable-maintainer-mode --enable-ftdi; make -j6; make install
 #RUN cp /opt/openocd-code/contrib/*.rules /etc/udev/rules.d/
 
-RUN apt-get install -y vim silversearcher-ag 
+RUN apt-get install -y vim silversearcher-ag bash-completion lsof
 
 ### tmux
 RUN apt-get install -y python-software-properties software-properties-common && \
@@ -66,6 +66,10 @@ RUN apt-get install -y python-software-properties software-properties-common && 
 RUN mkdir -p /home/avatar/.vim/tmp && echo -e 'set term=xterm\n\
 """ swp directory\n\
 set directory=~/.vim/tmp' >> /home/avatar/.vimrc
+
+RUN echo -e '\
+alias ls="ls --color"\n\
+' >> /home/avatar/.bashrc
 
 ### for tmux 
 ### (1) install tmux-plugins/tpm
@@ -85,6 +89,8 @@ set -g @plugin 'tmux-plugins/tmux-sensible'\n\
 run '~/.tmux/plugins/tpm/tpm'\n\
 \n\
 set -g @plugin 'tmux-plugins/tmux-resurrect'\n\
+# for vim\n\
+set -g @resurrect-strategy-vim 'session'\n\
 " >> /home/avatar/.tmux.conf
 
 RUN apt install -y lua5.1 luarocks
