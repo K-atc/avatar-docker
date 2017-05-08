@@ -63,19 +63,20 @@ RUN apt-get install -y python-software-properties software-properties-common && 
 
 ### personal developing settings
 # RUN git remote set-url origin git@github.com:K-atc/avatar-python.git
-RUN mkdir -p /home/avatar/.vim/tmp && echo -e 'set term=xterm\n\
-""" swp directory\n\
+RUN mkdir -p /home/avatar/.vim/tmp && echo 'set term=xterm\
+""" swp directory\
 set directory=~/.vim/tmp' >> /home/avatar/.vimrc
 
-RUN echo -e '\
-alias ls="ls --color"\n\
+RUN echo '\
+export PYTHONPATH=~/projects/avatar-python/ 
+alias ls="ls --color"\
 ' >> /home/avatar/.bashrc
 
 ### for tmux 
 ### (1) install tmux-plugins/tpm
 ### (2) install tmux-plugins/tmux-resurrect
 RUN git clone https://github.com/tmux-plugins/tpm /home/avatar/.tmux/plugins/tpm && \
-    echo -e "\n\
+    echo "\n\
 # List of plugins\n\
 set -g @plugin 'tmux-plugins/tpm'\n\
 set -g @plugin 'tmux-plugins/tmux-sensible'\n\
