@@ -61,6 +61,9 @@ RUN apt-get install -y python-software-properties software-properties-common && 
     apt-get update && \
     apt-get install -y tmux=2.0-1~ppa1~t
 
+### google-perftools
+RUN apt-get install -y google-perftools libgoogle-perftools-dev kcachegrind
+
 ### personal developing settings
 # RUN git remote set-url origin git@github.com:K-atc/avatar-python.git
 RUN mkdir -p /home/avatar/.vim/tmp && echo 'set term=xterm\
@@ -68,8 +71,8 @@ RUN mkdir -p /home/avatar/.vim/tmp && echo 'set term=xterm\
 set directory=~/.vim/tmp' >> /home/avatar/.vimrc
 
 RUN echo '\
-export PYTHONPATH=~/projects/avatar-python/ 
-alias ls="ls --color"\
+export PYTHONPATH=~/projects/avatar-python/ \
+alias ls="ls --color" \
 ' >> /home/avatar/.bashrc
 
 ### for tmux 
