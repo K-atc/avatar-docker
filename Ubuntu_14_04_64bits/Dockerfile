@@ -62,7 +62,7 @@ RUN apt-get install -y python-software-properties software-properties-common && 
     apt-get install -y tmux=2.0-1~ppa1~t
 
 ### google-perftools
-RUN apt-get install -y google-perftools libgoogle-perftools-dev kcachegrind
+RUN apt-get update -y && apt-get install -y google-perftools libgoogle-perftools-dev kcachegrind
 
 ### personal developing settings
 # RUN git remote set-url origin git@github.com:K-atc/avatar-python.git
@@ -111,6 +111,8 @@ VOLUME /dev/bus/usb:/dev/bus/usb
 RUN useradd -ms /bin/bash avatar
 RUN echo "avatar:avatar" | chpasswd && adduser avatar sudo
 RUN chown -R avatar:avatar /home/avatar
+
+RUN apt install -y man mlocate && updatedb
 
 USER avatar
 
