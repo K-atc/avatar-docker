@@ -56,7 +56,7 @@ RUN cd /home/avatar/projects/openocd;./bootstrap;./configure --enable-jlink --en
 RUN apt-get install -y vim silversearcher-ag bash-completion lsof
 
 ### tmux
-RUN apt-get install -y python-software-properties software-properties-common && \
+RUN apt update && apt-get install -y python-software-properties software-properties-common && \
     add-apt-repository -y ppa:pi-rho/dev && \
     apt-get update && \
     apt-get install -y tmux=2.0-1~ppa1~t
