@@ -50,7 +50,8 @@ RUN git clone https://github.com/ntfreak/openocd.git
 
 #RUN git clone git://git.code.sf.net/p/openocd/code /opt/openocd-code
 #RUN git clone https://github.com/eurecom-s3/openocd.git opt/openocd-code
-RUN cd /home/avatar/projects/openocd;./bootstrap;./configure --enable-jlink --enable-maintainer-mode --enable-ftdi; make -j6; make install
+RUN apt install -y libhidapi-dev
+RUN cd /home/avatar/projects/openocd;./bootstrap;./configure --enable-jlink --enable-maintainer-mode --enable-ftdi --enable-cmsis-dap --enable-hidapi-libusb; make -j6; make install
 #RUN cp /opt/openocd-code/contrib/*.rules /etc/udev/rules.d/
 
 RUN apt-get install -y vim silversearcher-ag bash-completion lsof
