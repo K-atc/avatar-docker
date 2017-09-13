@@ -1,0 +1,37 @@
+diff --git a/qemu/target-arm/cpu.h b/qemu/target-arm/cpu.h
+index 9006254..05cf588 100644
+--- a/qemu/target-arm/cpu.h
++++ b/qemu/target-arm/cpu.h
+@@ -594,7 +594,8 @@ static inline void cpu_get_tb_cpu_state(CPUARMState *env, target_ulong *pc,
+     if (privmode) {
+         *flags |= ARM_TBFLAG_PRIV_MASK;
+     }
+-    if (env->vfp.xregs[ARM_VFP_FPEXC] & (1 << 30)) {
++    // if (env->vfp.xregs[ARM_VFP_FPEXC] & (1 << 30)) {
++    if (true) {
+         *flags |= ARM_TBFLAG_VFPEN_MASK;
+     }
+ }
+diff --git a/qemu/target-arm/helper.c b/qemu/target-arm/helper.c
+index c2cc76e..7d833c2 100644
+--- a/qemu/target-arm/helper.c
++++ b/qemu/target-arm/helper.c
+@@ -17,7 +17,7 @@ static uint32_t cortexa15_cp15_c0_c2[8] = {
+ };
+ 
+ static uint32_t cortexa9_cp15_c0_c1[8] =
+-{ 0x1031, 0x11, 0x000, 0, 0x00100103, 0x20000000, 0x01230000, 0x00002111 };
++{ 0x1031, 0x11, 0x000 | (0xf << 20), 0, 0x00100103, 0x20000000, 0x01230000, 0x00002111 };
+ 
+ static uint32_t cortexa9_cp15_c0_c2[8] =
+ { 0x00101111, 0x13112111, 0x21232041, 0x11112131, 0x00111142, 0, 0, 0 };
+@@ -299,6 +299,9 @@ void cpu_state_reset(CPUARMState *env)
+     if (id)
+         cpu_reset_model_id(env, id);
+     env->cp15.c15_config_base_address = tmp;
++    env->cp15.c0_c1[2] |= 0xf << 20;
++    env->vfp.xregs[ARM_VFP_FPEXC] = 1 << 30;
++    qemu_log("******************* cpu_state_reset *********************\n");
+ #if defined (CONFIG_USER_ONLY)
+     env->uncached_cpsr = ARM_CPU_MODE_USR;
+     /* For user mode we must enable access to coprocessors */
